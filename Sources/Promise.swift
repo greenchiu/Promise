@@ -82,16 +82,6 @@ final public class Promise<T> {
     }
 
     @discardableResult
-    public func `continue`( _ body: @escaping (Result<T, Error>) -> Void) -> Promise<T> {
-        let rp = Promise<T>()
-        pipe { value in
-            body(value)
-            rp.seal(value)
-        }
-        return rp
-    }
-
-    @discardableResult
     func map<U>(_ transform: @escaping (T) throws -> U ) -> Promise<U> {
         let rp = Promise<U>()
         pipe { value in
@@ -112,13 +102,23 @@ final public class Promise<T> {
     }
 
     @discardableResult
-    public func then(_ body: @escaping (T) -> Void) -> Promise<T> {
-        let rp = Promise<T>()
+    public func then<E, U: Promise<E>>(_ body: @escaping (T) throws -> U) -> U {
+        let rp = U()
         pipe {
-            if case .success(let v) = $0 {
-                body(v)
+            switch $0 {
+            case .success(let value):
+                do {
+                    let inp = try body(value)
+                    inp.pipe {
+                        rp.seal($0)
+                    }
+                }
+                catch {
+                    rp.seal(.failure(error))
+                }
+            case .failure(let e):
+                rp.seal(.failure(e))
             }
-            rp.seal($0)
         }
         return rp
     }

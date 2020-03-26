@@ -14,8 +14,8 @@ firstly(executor: .main) {
 }
 .dispatch(to: .background)
 .map(String.init)
-.then {
-    print($0)
+.then { _ in
+    .init(1000)
 }
 .map { _ in
     throw PromiseError.invaild
@@ -37,9 +37,9 @@ The first following list is completed features and the second is ToDos.
 
 ### ToDos
 
-[ ] Group
-[ ] Delay/After
-[ ] Support ObjC
+* [ ] Group
+* [ ] Delay/After
+* [ ] Support ObjC
 
 ## Reference
 
