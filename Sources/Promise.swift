@@ -152,6 +152,7 @@ final public class Promise<T> {
 }
 
 extension Promise {
+    @available(*, deprecated, message: "It's not thread-safe, will implement aysnc for it")
     @discardableResult
     public func dispatch(to executor: AsyncExecutor) -> Promise<T> {
         self.executor = executor
