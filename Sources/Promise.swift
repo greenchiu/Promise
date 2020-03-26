@@ -114,10 +114,10 @@ final public class Promise<T> {
                     }
                 }
                 catch {
-                    rp.seal(.failure(error))
+                    rp.reject(error)
                 }
             case .failure(let e):
-                rp.seal(.failure(e))
+                rp.reject(e)
             }
         }
         return rp
@@ -131,6 +131,21 @@ final public class Promise<T> {
                 body(error)
             }
             rp.seal($0)
+        }
+        return rp
+    }
+    
+    @discardableResult
+    public func done(_ body: @escaping (T) -> Void) -> Promise<Void> {
+        let rp = Promise<Void>()
+        pipe {
+            switch $0 {
+            case .success(let value):
+                body(value)
+                rp.fulfill(())
+            case .failure(let error):
+                rp.reject(error)
+            }
         }
         return rp
     }
