@@ -5,6 +5,9 @@
       location = "group:README.md">
    </FileRef>
    <FileRef
+      location = "group:Promise.playground">
+   </FileRef>
+   <FileRef
       location = "group:Promise.xcodeproj">
    </FileRef>
 </Workspace>
